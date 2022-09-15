@@ -8,7 +8,7 @@
 ### Notes
 
 ### Bibliographie
-- 
+- https://www.controlglobal.com/articles/2019/signal-filtering-why-and-how/ (Problème du lag) dans avec les filtres
 
 ## Bilan de la séance
 
