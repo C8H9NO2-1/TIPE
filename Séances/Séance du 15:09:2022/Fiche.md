@@ -1,4 +1,4 @@
-# Séance du //2022
+# Séance du 15/09/2022
 
 ## Objectifs de la séance
 - 
