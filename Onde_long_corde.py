@@ -2,16 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-N = 200
-N2 = 4000
+Nx = 200
+Nt = 4000
 delta_t = 1
 delta_x = 1
 
 c = 1
 
-m = np.zeros((N, N2))
 
-def initOnde4fronts():
+def initOnde4fronts(m):
     for i in range(10, 210):
         delta = 2*np.pi / 100
         t = i - 10
@@ -22,7 +21,7 @@ def initOnde4fronts():
         t = i - 11
         m[1][i] = (np.sin(t * delta)) ** 2
 
-def initRais():
+def initRes(m):
     for i in range(0, 399):
         delta = 2*np.pi / 100
         m[0][i] = (np.sin(i * delta)) ** 2
@@ -31,7 +30,7 @@ def initRais():
         delta = 2*np.pi / 100
         m[1][i] = (np.sin(i * delta)) ** 2
 
-def initDeuxRais():
+def initDeuxRes(m):
     for i in range(0, 399):
         delta = 2*np.pi / 400
         m[0][i] = (np.sin(i * delta)) ** 2
@@ -40,7 +39,7 @@ def initDeuxRais():
         delta = 2*np.pi / 400
         m[1][i] = (np.sin(i * delta)) ** 2
 
-def initUneRais():
+def initUneRes(m):
     for i in range(0, 399):
         delta = 2*np.pi / 800
         m[0][i] = (np.sin(i * delta)) ** 2
@@ -48,32 +47,55 @@ def initUneRais():
     for i in range(1, 400):
         delta = 2*np.pi / 800
         m[1][i] = (np.sin(i * delta)) ** 2
+
+def animate(i,l):
+    m = l[0]
+    line.set_ydata(m[:,i])  # update the data.
+    return line,
 
 #initDeuxRais()
 #initRais()
-initUneRais()
+#initUneRais()
 #initOnde4fronts()
 #initUneRais()
 
-for  j in range(1, N2 - 1):
-    for i in range(2, N - 1):
-        m[i][j + 1] = 2 * m[i][j] - m[i][j - 1] + (c * delta_t / delta_x) ** 2 * (m[i + 1][j] - 2 * m[i][j] + m[i - 1][j])
+def resolutionEq(f):
+    m = np.zeros((Nx,Nt))
+    f(m)
+    for  j in range(1, Nt - 1):
+        for i in range(2, Nx - 1):
+            m[i][j + 1] = 2 * m[i][j] - m[i][j - 1] + (c * delta_t / delta_x) ** 2 * (m[i + 1][j] - 2 * m[i][j] + m[i - 1][j])
+    return m
+
+
 
 a = np.arange(0, 200, 1)
 
 
-# plt.plot(a, colonne(m, 100))
 
-fig, ax = plt.subplots()
 
-line, = ax.plot(a, m[:,0])
+fig, ax = plt.subplots(nrows=2,ncols=2)
 
-def animate(i):
-    line.set_ydata(m[:,i])  # update the data.
-    return line,
 
-ani = animation.FuncAnimation(
-    fig, animate, interval=1, blit=False, save_count=50)
+m1 = resolutionEq(initOnde4fronts)
+m2 = resolutionEq(initRes)
+m3 = resolutionEq(initDeuxRes)
+m4 = resolutionEq(initUneRes)
+
+line, = ax.flat[0].plot(a, m1[:,0])
+
+ani1 = animation.FuncAnimation(
+    fig, animate, interval=1, blit=False, save_count=50,fargs=(m1))
+
+ani2 = animation.FuncAnimation(
+    fig, animate, interval=1, blit=False, save_count=50,fargs=(m2))
+
+ani3 = animation.FuncAnimation(
+    fig, animate, interval=1, blit=False, save_count=50,fargs=(m3))
+
+ani4 = animation.FuncAnimation(
+    fig, animate, interval=1, blit=False, save_count=50,fargs=(m4))
+
 
 plt.ylim(top=2.1, bottom=-2.1)
 plt.show()
