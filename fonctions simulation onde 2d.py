@@ -4,11 +4,15 @@ import matplotlib.animation as animation
 import time
 
 
-def resolutionEq2d(cube, Nt): #besoin des primitives de files + module time
+def resolutionEq2d(cube, Nt, delta_x, delta_y, delta_t, c): #besoin des primitives de files + module time
 
     """
     cube : cube avec conditions initiales
     Nt : nombre de valeurs de temps sur lesquelles résoudre l'eq de propag de l'onde
+    delta_x : distance entre x et x+1
+    delta_y : ditance entre y et y+1
+    delta_t : durée entre t et t+1
+    c : célérité de l'onde
     """
 
     file=[0 for _ in range(10)] #le temps moyen sera basé sur 10 itération
