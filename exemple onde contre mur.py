@@ -35,7 +35,6 @@ def resolutionEq2DNeumann(cube, Nt, delta_x, delta_y, delta_t, c): #modifie le c
 
     """
     cube : cube avec conditions initiales
-    mur(cube) : fonction qui impose
     Nt : nombre de valeurs de temps sur lesquelles résoudre l'eq de propag de l'onde
     delta_x : distance entre x et x+1
     delta_y : ditance entre y et y+1
