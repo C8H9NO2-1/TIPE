@@ -35,6 +35,7 @@ def resolutionEq2DNeumann(cube, Nt, delta_x, delta_y, delta_t, c): #modifie le c
 
     """
     cube : cube avec conditions initiales
+    mur(cube) : fonction qui impose
     Nt : nombre de valeurs de temps sur lesquelles résoudre l'eq de propag de l'onde
     delta_x : distance entre x et x+1
     delta_y : ditance entre y et y+1
@@ -52,6 +53,41 @@ def resolutionEq2DNeumann(cube, Nt, delta_x, delta_y, delta_t, c): #modifie le c
         print(np.mean(file)*(Nt-t)/60) #calcul du temps restant à partir des 10 val dans la file (renvoie le temps restant en minutes)
         temps1 = time.time()
         cube[1:-1,1:-1,t+1] = 2*cube[1:-1,1:-1,t]-cube[1:-1,1:-1,t-1]+((delta_t*c)**2)*((cube[2:,1:-1,t]-2*cube[1:-1,1:-1,t]+cube[:-2,1:-1,t])/(delta_x)**2+(cube[1:-1,2:,t]-2*cube[1:-1,1:-1,t]+cube[1:-1,:-2,t])/(delta_y**2))
+        for x in range(1,Nx-1):
+            cube[x,1,t+1]=cube[x,2,t+1]
+            cube[x,0,t+1]=cube[x,1,t+1]
+            cube[x,Ny-2,t+1]=cube[x,Ny-3,t+1]
+            cube[x,Ny-1,t+1]=cube[x,Ny-2,t+1]
+        for y in range(1,Ny-1):
+            cube[1,y,t+1]=cube[2,y,t+1]
+            cube[0,y,t+1]=cube[1,y,t+1]
+            cube[Nx-2,y,t+1]=cube[Nx-3,y,t+1]
+            cube[Nx-1,y,t+1]=cube[Nx-2,y,t+1]
+
+
+
+def resolutionEq2DDiffraction(cube, Nt, delta_x, delta_y, delta_t, c): #modifie le cube passé en paramètres (conditions de Neumann) simule 4murs autour de l'onde
+
+    """
+    cube : cube avec conditions initiales
+    mur(cube) : fonction qui impose
+    Nt : nombre de valeurs de temps sur lesquelles résoudre l'eq de propag de l'onde
+    delta_x : distance entre x et x+1
+    delta_y : ditance entre y et y+1
+    delta_t : durée entre t et t+1
+    c : célérité de l'onde
+    """
+    Nx = 300
+    Ny = 150
+
+    file=[0 for _ in range(10)] #le temps moyen sera basé sur 10 itération
+    temps1 = time.time()
+    for t in range(1,Nt-1):
+        enfiler(time.time()-temps1,file)
+        defiler(file) #pour garder 10 valeurs dans la file
+        if t>10: print(np.mean(file)*(Nt-t)/60) #calcul du temps restant à partir des 10 val dans la file (renvoie le temps restant en minutes)
+        temps1 = time.time()
+        cube[1:149,1:-1,t+1] = 2*cube[1:149,1:-1,t]-cube[1:149,1:-1,t-1]+((delta_t*c)**2)*((cube[2:150,1:-1,t]-2*cube[1:149,1:-1,t]+cube[:148,1:-1,t])/(delta_x)**2+(cube[1:149,2:,t]-2*cube[1:149,1:-1,t]+cube[1:149,:-2,t])/(delta_y**2))
         for x in range(1,Nx-1):
             cube[x,1,t+1]=cube[x,2,t+1]
             cube[x,0,t+1]=cube[x,1,t+1]
@@ -152,15 +188,15 @@ def affCube(cube, Xtab, Ytab, fps, frn, Xlim, Ylim, Zlim_bas, Zlim_haut): #affic
 ##
 
 Nx=300
-Ny=300
+Ny=150
 Nt = 200
 c = 0.01
 delta_t = 1.
-delta_x = c # pour avoir une célérité initiale cohérente (initialement, on décale d'un indice l'onde à t=0, et donc on la décale de c car delta_t = 1)
-delta_y = 1.
+delta_x = 1.0 # pour avoir une célérité initiale cohérente (initialement, on décale d'un indice l'onde à t=0, et donc on la décale de c car delta_t = 1)
+delta_y = c
 
 
-cube = condIni(Nx,Ny,Nt,30,int(Nx/2),int(Ny/2),1,0)
+cube = condIni(Nx,Ny,Nt,15,150,40,0,1)
 resolutionEq2DNeumann(cube, Nt, delta_x, delta_y, delta_t, c)
 
 ##
