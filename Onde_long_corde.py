@@ -84,17 +84,13 @@ m4 = resolutionEq(initUneRes)
 
 line, = ax.flat[0].plot(a, m1[:,0])
 
-ani1 = animation.FuncAnimation(
-    fig, animate, interval=1, blit=False, save_count=50,fargs=(m1))
+ani1 = animation.FuncAnimation(fig, animate, interval=20, blit=False, save_count=50,fargs=(m1))
 
-ani2 = animation.FuncAnimation(
-    fig, animate, interval=1, blit=False, save_count=50,fargs=(m2))
+ani2 = animation.FuncAnimation(fig, animate, interval=20, blit=False, save_count=50,fargs=(m2))
 
-ani3 = animation.FuncAnimation(
-    fig, animate, interval=1, blit=False, save_count=50,fargs=(m3))
+ani3 = animation.FuncAnimation(fig, animate, interval=20, blit=False, save_count=50,fargs=(m3))
 
-ani4 = animation.FuncAnimation(
-    fig, animate, interval=1, blit=False, save_count=50,fargs=(m4))
+ani4 = animation.FuncAnimation(fig, animate, interval=20, blit=False, save_count=50,fargs=(m4))
 
 
 plt.ylim(top=2.1, bottom=-2.1)
