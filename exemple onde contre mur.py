@@ -121,7 +121,7 @@ def condIni(Nx, Ny, Nt, r_init, xcenter, ycenter, decalX, decalY): #cos**2 en 2d
             cube[int(np.cos(theta)*r)+xcenter,int(np.sin(theta)*r)+ycenter,0] = np.cos(r/(2*r_init)*np.pi)
     for x in range(1,Nx):
         for y in range(Ny):
-            cube[x,y,1] = cube[x-decalX,y-decalY,0]
+            cube[x,y,1] = cube[x-1,y,0]
     return cube
 
 def dimQual(nouvNx, nouvNy, cube): #diminue la qualité du cube pour un affichage plus fluide, renvoie un nouveau cube et les coordonnées associées à chaque point (le point cube[x,y,t] a pour coordonnées (Xtab[x],Ytab[y],cube[x,y,t]) dans le repère (O,Ox,Oy,Oz)
@@ -188,29 +188,18 @@ def affCube(cube, Xtab, Ytab, fps, frn, Xlim, Ylim, Zlim_bas, Zlim_haut): #affic
 ##
 
 Nx=300
-Ny=150
+Ny=300
 Nt = 200
 c = 0.01
 delta_t = 1.
-delta_x = 1.0 # pour avoir une célérité initiale cohérente (initialement, on décale d'un indice l'onde à t=0, et donc on la décale de c car delta_t = 1)
-delta_y = c
+delta_x = c # pour avoir une célérité initiale cohérente (initialement, on décale d'un indice l'onde à t=0, et donc on la décale de c car delta_t = 1)
+delta_y = 1.
 
 
-cube = condIni(Nx,Ny,Nt,15,150,40,0,1)
+cube = condIni(Nx,Ny,Nt,30,150,40,0,1)
 resolutionEq2DNeumann(cube, Nt, delta_x, delta_y, delta_t, c)
 
 ##
 
 cubeaff, Xtab, Ytab = dimQual(50,50,cube)
-affCube(cubeaff,Xtab,Ytab,250,Nt,Nx,Ny,-0.5,1.5)
-
-
-
-
-
-
-
-
-
-
-
+affCube(cubeaff,Xtab,Ytab,500,Nt,Nx,Ny,-0.5,1.5)
