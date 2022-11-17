@@ -71,27 +71,48 @@ def resolutionEq(f):
 
 a = np.arange(0, 200, 1)
 
+#penser à essayer de ne pas faire avancer l'onde initiale le long de la corde mais de la multiplier par un facteur <1 pour l'amortir entre t=0 et t=1, peut être intéressant
+
+
+fig, ax = plt.subplots()
 
 
 
-fig, ax = plt.subplots(nrows=2,ncols=2)
 
 
-m1 = resolutionEq(initOnde4fronts)
-m2 = resolutionEq(initRes)
-m3 = resolutionEq(initDeuxRes)
-m4 = resolutionEq(initUneRes)
+#m1 = resolutionEq(initDeuxRes)
+#m1 = resolutionEq(initOnde4fronts)
+#m1 = resolutionEq(initUneRes)
+#m1 = resolutionEq(initRes)
 
-line, = ax.flat[0].plot(a, m1[:,0])
+"""
+line, = ax.flat.plot(a, m1[:,0])
 
-ani1 = animation.FuncAnimation(fig, animate, interval=20, blit=False, save_count=50,fargs=(m1))
+ani1 = animation.FuncAnimation(
+    fig, animate, interval=1, blit=False, save_count=50,fargs=(m1))
 
-ani2 = animation.FuncAnimation(fig, animate, interval=20, blit=False, save_count=50,fargs=(m2))
+#ani2 = animation.FuncAnimation(
+  #  fig, animate, interval=1, blit=False, save_count=50,fargs=(m2))
 
-ani3 = animation.FuncAnimation(fig, animate, interval=20, blit=False, save_count=50,fargs=(m3))
+#ani3 = animation.FuncAnimation(
+  #  fig, animate, interval=1, blit=False, save_count=50,fargs=(m3))
 
-ani4 = animation.FuncAnimation(fig, animate, interval=20, blit=False, save_count=50,fargs=(m4))
+#ani4 = animation.FuncAnimation(
+   # fig, animate, interval=1, blit=False, save_count=50,fargs=(m4))
 
+"""
+
+line, = ax.plot(a, m1[:,0])
+
+def animate(i):
+    line.set_ydata(m1[:,i])  # update the data.
+    return line,
+
+ani = animation.FuncAnimation(
+    fig, animate, interval=5, blit=False, save_count=50)
+
+plt.ylim(top=1.1, bottom=-1.1)
+plt.show()
 
 plt.ylim(top=2.1, bottom=-2.1)
 plt.show()
