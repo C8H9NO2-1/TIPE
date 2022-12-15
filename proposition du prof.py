@@ -217,7 +217,7 @@ delta_x = c # pour avoir une célérité initiale cohérente (initialement, on d
 delta_y = c # ET NON PAS 1
 
 
-cube = condIni(Nx,Ny,Nt,30,75,225,75,225,0,0)
+cube = condIni(Nx,Ny,Nt,30,75,10,250,10,0,0)
 resolutionEq2d(cube, Nt, delta_x, delta_y, delta_t, c)
 
 
