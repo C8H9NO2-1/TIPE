@@ -12,8 +12,8 @@ f = 400
 Te = 1/(f * delta_i)
 
 t = np.linspace(0, 1/f, delta_i + 1)
-Amp1 = 10
-Amp2 = 1
+Amp1 = 5
+Amp2 = 5
 signal1 = np.array([Amp1 * np.sin(i / delta_i * 2 * np.pi) for i in range(delta_i + 1)])
 
 Te_entree = 1 / (1000 * f) # periode d'echantillonage des entrees
@@ -57,12 +57,12 @@ def valeur_signal_primaire():
         
         temp = temps[0]
         tension = tensions[0]
-        temps = temp[:nb_points - int(0.02 / Te_entree)]
+        temp = temp[:nb_points - int(0.02 / Te_entree)]
         tension = tension[int(0.02 / Te_entree):]
         
-        regression = fit_sin(temp, tension)["fitfunc"](temp)
+        regression = fit_sin(temp, tension)
         
-        amplitudes.append(regression["amp"])
+        amplitudes.append(abs(regression["amp"]))
         frequences.append(regression["freq"])
         
         pyc.Sysam.stopper_sorties(sys, 1, 1)
@@ -91,10 +91,13 @@ def test_phases(tab_phases):
     pyc.Sysam.config_echantillon(sys, Te_entree * 10**6, nb_points)
     
     for phase in tab_phases:
+        phase *= np.pi/180
         signal2 = np.array([Amp2 * np.sin(i / delta_i * 2 * np.pi + phase) for i in range(delta_i + 1)])
         pyc.Sysam.config_sortie(sys, 2, Te * 10**6, signal2, -1)
         
         pyc.Sysam.declencher_sorties(sys, 1, 1)
+
+        time.sleep(2/340) # Le temps que le signal atteigne le bout du tuyau
         
         pyc.Sysam.acquerir(sys)
 
@@ -106,126 +109,16 @@ def test_phases(tab_phases):
         
         pyc.Sysam.stopper_sorties(sys, 1, 1)
         
-        regression = fit_sin(temp2, tension2)["fitfunc"](temp2)
-        amp = regression["amp"]
+        regression = fit_sin(temp2, tension2)
+        amp = abs(regression["amp"])
         tab_amp.append(amp)
         
     return tab_amp
 
-phases = []
+phases = [i/10 for i in range(200, 410)]
 amps = test_phases(phases)
 amps /= signal_primaire[0]
 
 plt.figure()
-plt.plot(phases, amps)
-
-        
-        
-        
-    
-
-
-
-
-
-
-
-
-
-
-
-# pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal1, -1)
-# pyc.Sysam.config_sortie(sys, 2, Te * 10**6, signal2, -1)
-
-# pyc.Sysam.config_entrees(sys, [0], [0.4])
-# pyc.Sysam.config_echantillon(sys, Te_entree * 10**6, nb_points)
-
-# # Acquisition du signal primaire
-# # pyc.Sysam.declencher_sorties(sys, 1, 0)
-
-# # pyc.Sysam.acquerir(sys)
-
-# # temps = pyc.Sysam.temps(sys)
-# # tensions = pyc.Sysam.entrees(sys)
-
-# # temp1 = temps[0]
-# # tension1 = tensions[0]
-
-# # Acquisition du signal primaire accompagne du signal secondaire
-# tab_temp2 = []
-# tab_tension2 = []
-# tab_regression2 = []
-# for j in range(36):
-#     delta_phi = 10 * j
-#     delta_phi *= (np.pi / 180)
-#     signal2 = np.array([Amp2 * np.sin(i / delta_i * 2 * np.pi + delta_phi) for i in range(delta_i + 1)])
-    
-#     pyc.Sysam.declencher_sorties(sys, 1, 1)
-
-#     pyc.Sysam.acquerir(sys)
-
-#     temps = pyc.Sysam.temps(sys)
-#     tensions = pyc.Sysam.entrees(sys)
-
-#     temp2 = temps[0]
-#     tension2 = tensions[0]
-#     tab_temp2.append(temp2)
-#     tab_tension2.append(tension2)
-
-#     # On arrete tout et on affiche les courbes
-#     pyc.Sysam.stopper_sorties(sys, 1, 1)
-
-# # On tronque les tableaux pour eleminer le debut (on retire les points sur les 0.02 premieres secondes
-# # temp1 = temp1[:nb_points - int(0.02 / Te_entree)]
-# # tension1 = tension1[int(0.02 / Te_entree):]
-# temp2 = temp2[:nb_points - int(0.02 / Te_entree)]
-# tension2 = tension2[int(0.02 / Te_entree):]
-
-# # regression1 = fit_sin(temp1, tension1)["fitfunc"](temp1)
-# regression2 = fit_sin(temp2, tension2)["fitfunc"](temp2)
-
-# #===========================================================
-
-# #plt.figure()
-# #plt.plot(t, signal1, label = "Source primaire", marker="x", ls="None")
-# #plt.plot(t, signal2, label = "Source secondaire", marker="x", ls="None")
-# #plt.legend()
-
-# # On tronque l'affichage
-# m = int(len(temp2) / 2)
-# # temp1 = temp1[m:m + int(2 * 1/(f * Te_entree))]
-# # tension1 = tension1[m:m + int(2 * 1/(f * Te_entree))]
-# temp2 = temp2[m:m + int(2 * 1/(f * Te_entree))]
-# tension2 = tension2[m:m + int(2 * 1/(f * Te_entree))]
-# # regression1 = regression1[m:m + int(2 * 1/(f * Te_entree))]
-# regression2 = regression2[m:m + int(2 * 1/(f * Te_entree))]
-
-# # plt.figure()
-# # plt.plot(temp1, tension1, label = "Source primaire", marker="x", ls="None")
-# # plt.plot(temp1, regression1, label = "Source primaire regression")
-# # plt.legend()
-
-# plt.figure()
-# plt.plot(temp2, tension2, label = "Source primaire + source secondaire", marker="x", ls="None")
-# plt.plot(temp2, regression2, label = "Source primaire + source secondaire regression")
-# plt.legend()
-
-# plt.figure()
-# # plt.plot(temp1, regression1, label = "Source primaire regression")
-# plt.plot(temp2, regression2, label = "Source primaire + source secondaire regression")
-# plt.legend()
-
-# delta_phi *= (180 / np.pi)
-
-
-# #plt.title("f = " + str(f) + " Hz " + " phi = " + str(delta_phi) + " deg")
-# #plt.savefig("f = " + str(f) + " Hz " + " phi = " + str(delta_phi) + " deg.pdf")
-
-
-# plt.show()
-
-
-
-
-
-
+plt.plot(phases, amps, marker  = "x", ls = 'none')
+plt.show()
