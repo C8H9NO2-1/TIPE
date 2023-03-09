@@ -115,7 +115,7 @@ def test_phases(tab_phases):
         
     return tab_amp
 
-def test_amplitudes(phi):
+def test_amplitudes(phi, tab_amp):
     tab_theo = []
     tab_pratique = []
     
@@ -124,7 +124,7 @@ def test_amplitudes(phi):
     pyc.Sysam.config_entrees(sys, [0], [1])
     pyc.Sysam.config_echantillon(sys, Te_entree * 10**6, nb_points)
     
-    for a1 in range(1, 6):
+    for a1 in tab_amp:
         signal1 = np.array([a1 * np.sin(i / delta_i * 2 * np.pi) for i in range(delta_i + 1)])
         pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal1, -1)
         
@@ -143,11 +143,11 @@ def test_amplitudes(phi):
         regression = fit_sin(temp1, tension1)
         amp1 = abs(regression["amp"])
         
-        for a2 in range(1, 6):
+        for a2 in tab_amp:
             
             tab_theo.append(a2/a1)
             
-            phase *= np.pi/180
+            phi *= np.pi/180
             signal2 = np.array([Amp2 * np.sin(i / delta_i * 2 * np.pi + phi) for i in range(delta_i + 1)])
             pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal2, -1)
             
@@ -162,6 +162,8 @@ def test_amplitudes(phi):
 
             temp2 = temps[0]
             tension2 = tensions[0]
+            
+            pyc.Sysam.stopper_sorties(sys, 1, 1)
         
             regression = fit_sin(temp2, tension2)
             amp2 = abs(regression["amp"])
