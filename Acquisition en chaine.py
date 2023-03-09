@@ -185,7 +185,7 @@ def test_amplitudes(phi, tab_amp):
 # phases = [i/10 for i in range(200, 410)]
 # amps = test_phases(phases)
 # amps /= signal_primaire[0]
-x, y = test_amplitudes(30)
+x, y = test_amplitudes(30, [])
 
 plt.figure()
 plt.plot(x, y, marker  = "x", ls = 'none')
