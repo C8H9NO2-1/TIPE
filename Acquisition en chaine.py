@@ -80,7 +80,7 @@ def valeur_signal_primaire():
     np.save("signal primaire.npy", array)
     
 # valeur_signal_primaire()
-# signal_primaire = np.load("signal primaire.npy")
+signal_primaire = np.load("signal primaire.npy")
 
 def test_phases(tab_phases):
     tab_amp = []
@@ -123,52 +123,35 @@ def test_amplitudes(phi, tab_amp):
     
     pyc.Sysam.config_entrees(sys, [0], [1])
     pyc.Sysam.config_echantillon(sys, Te_entree * 10**6, nb_points)
-    
-    for a1 in tab_amp:
-        signal1 = np.array([a1 * np.sin(i / delta_i * 2 * np.pi) for i in range(delta_i + 1)])
-        pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal1, -1)
+
+    amp1 = signal_primaire[0]
+        
+    for a2 in tab_amp:
+        
+        tab_theo.append(a2)
+        
+        phi *= np.pi/180
+        signal2 = np.array([a2 * np.sin(i / delta_i * 2 * np.pi + phi) for i in range(delta_i + 1)])
+        pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal2, -1)
         
         pyc.Sysam.declencher_sorties(sys, 1, 0)
 
         time.sleep(2/340) # Le temps que le signal atteigne le bout du tuyau
-        
+    
         pyc.Sysam.acquerir(sys)
-        
+    
         temps = pyc.Sysam.temps(sys)
         tensions = pyc.Sysam.entrees(sys)
 
-        temp1 = temps[0]
-        tension1 = tensions[0]
+        temp2 = temps[0]
+        tension2 = tensions[0]
         
-        regression = fit_sin(temp1, tension1)
-        amp1 = abs(regression["amp"])
+        pyc.Sysam.stopper_sorties(sys, 1, 1)
+    
+        regression = fit_sin(temp2, tension2)
+        amp2 = abs(regression["amp"])
         
-        for a2 in tab_amp:
-            
-            tab_theo.append(a2/a1)
-            
-            phi *= np.pi/180
-            signal2 = np.array([Amp2 * np.sin(i / delta_i * 2 * np.pi + phi) for i in range(delta_i + 1)])
-            pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal2, -1)
-            
-            pyc.Sysam.declencher_sorties(sys, 1, 0)
-
-            time.sleep(2/340) # Le temps que le signal atteigne le bout du tuyau
-        
-            pyc.Sysam.acquerir(sys)
-        
-            temps = pyc.Sysam.temps(sys)
-            tensions = pyc.Sysam.entrees(sys)
-
-            temp2 = temps[0]
-            tension2 = tensions[0]
-            
-            pyc.Sysam.stopper_sorties(sys, 1, 1)
-        
-            regression = fit_sin(temp2, tension2)
-            amp2 = abs(regression["amp"])
-            
-            tab_pratique.append(amp2 / amp1)
+        tab_pratique.append(amp2 / amp1)
     
     return tab_theo, tab_pratique
             
