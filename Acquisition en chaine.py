@@ -96,10 +96,12 @@ def test_phases(tab_phases):
     
     for phase in tab_phases:
         tab_rapport_temporaire = []
+        
+        phase *= np.pi/180
+        signal2 = np.array([Amp2 * np.sin(i / delta_i * 2 * np.pi + phase) for i in range(delta_i + 1)])
+        pyc.Sysam.config_sortie(sys, 2, Te * 10**6, signal2, -1)
+        
         for _ in range(nb_mesures):
-            phase *= np.pi/180
-            signal2 = np.array([Amp2 * np.sin(i / delta_i * 2 * np.pi + phase) for i in range(delta_i + 1)])
-            pyc.Sysam.config_sortie(sys, 2, Te * 10**6, signal2, -1)
             
             pyc.Sysam.declencher_sorties(sys, 1, 1)
 
@@ -115,7 +117,9 @@ def test_phases(tab_phases):
             
             pyc.Sysam.stopper_sorties(sys, 1, 1)
             
-            regression = fit_sin(temp2, tension2)
+            m = int(len(tension2) * 0.05) # On tronque de m valeurs
+            
+            regression = fit_sin(temp2[m:], tension2[m:])
             amp = abs(regression["amp"])
             tab_rapport_temporaire.append(amp / signal_primaire[0])
         
@@ -140,10 +144,12 @@ def test_amplitudes(phi, tab_amp):
     for a2 in tab_amp:
         tab_pratique_temporaire = []
         tab_theo.append(a2)
+        
+        phi *= np.pi/180
+        signal2 = np.array([a2 * np.sin(i / delta_i * 2 * np.pi + phi) for i in range(delta_i + 1)])
+        pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal2, -1)
+        
         for _ in range(nb_mesures):
-            phi *= np.pi/180
-            signal2 = np.array([a2 * np.sin(i / delta_i * 2 * np.pi + phi) for i in range(delta_i + 1)])
-            pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal2, -1)
             
             pyc.Sysam.declencher_sorties(sys, 1, 0)
 
@@ -158,8 +164,10 @@ def test_amplitudes(phi, tab_amp):
             tension2 = tensions[0]
             
             pyc.Sysam.stopper_sorties(sys, 1, 1)
+            
+            m = int(len(tension2) * 0.05) # On tronque de m valeurs
         
-            regression = fit_sin(temp2, tension2)
+            regression = fit_sin(temp2[m:], tension2[m:])
             amp2 = abs(regression["amp"])
             
             tab_pratique_temporaire.append(amp2 / amp1)
@@ -174,9 +182,9 @@ def test_amplitudes(phi, tab_amp):
 
 phases = [i for i in range(0, 360, 10)]
 rapports, erreurs = test_phases(phases)
-np.save("Phase ideale, f = " + str(f) + "Hz, nombre phases = " + str(len(phases)) + ", nombre mesures consecutives = " + str(nb_mesures) + ", time = " + str(datetime.datetime.now().day) + "-" + str(datetime.datetime.now().month) + " " + str(datetime.datetime.now().hour) + ":" + str(datetime.datetime.now().minute) + ".npy", np.array([rapports, phases, erreurs]))
+np.save("Phase ideale, f = " + str(f) + "Hz, nombre phases = " + str(len(phases)) + ", nombre mesures consecutives = " + str(nb_mesures) + ", time = " + str(datetime.datetime.now().day) + "-" + str(datetime.datetime.now().month) + " " + str(datetime.datetime.now().hour) + "h" + str(datetime.datetime.now().minute) + ".npy", np.array([rapports, phases, erreurs]))
 # amps /= signal_primaire[0]
-x, y = test_amplitudes(30, [])
+# x, y = test_amplitudes(30, [])
 
 plt.figure()
 # plt.errorbar(phases, rapports, erreurs, marker='x', ls='none')
