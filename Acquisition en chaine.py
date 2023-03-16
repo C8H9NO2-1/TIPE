@@ -2,6 +2,7 @@ import pycanum.main as pyc
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import datetime
 import scipy.optimize
 
 sys = pyc.Sysam("SP5")
@@ -19,7 +20,7 @@ signal1 = np.array([Amp1 * np.sin(i / delta_i * 2 * np.pi) for i in range(delta_
 Te_entree = 1 / (1000 * f) # periode d'echantillonage des entrees
 nb_points = 50000
 
-nb_mesures = 10 #? Nombre de mesures permettant de calculer un écart type
+nb_mesures = 5 #? Nombre de mesures permettant de calculer un écart type
 
 def fit_sin(tt, yy):
     '''Fit sin to the input time sequence, and return fitting parameters "amp", "omega", "phase", "offset", "freq", "period" and "fitfunc"'''
@@ -178,13 +179,13 @@ def test_amplitudes(phi, tab_amp):
 
 
 
-
-# phases = [i/10 for i in range(200, 410)]
+phases = [i for i in range(0, 360, 10)]
 # rapports, erreurs = test_phases(phases)
+np.save("Phase ideale, f = " + f + "Hz, nombre phases = " + len(phases) + " nombre mesures consecutives = " + nb_mesures + " time = " + datetime.datetime.now() + ".npy")
 # amps /= signal_primaire[0]
 x, y = test_amplitudes(30, [])
 
 plt.figure()
-# plt.errorbar(phases, rapports, erreurs)
+# plt.errorbar(phases, rapports, erreurs, marker='x', ls='none')
 plt.plot(x, y, marker  = "x", ls = 'none')
 plt.show()
