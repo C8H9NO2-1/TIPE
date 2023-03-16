@@ -174,7 +174,7 @@ def test_amplitudes(phi, tab_amp):
 
 phases = [i for i in range(0, 360, 10)]
 rapports, erreurs = test_phases(phases)
-np.save("Phase ideale, f = " + str(f) + "Hz, nombre phases = " + str(len(phases)) + " nombre mesures consecutives = " + str(nb_mesures) + " time = " + str(datetime.datetime.now().month) + str(datetime.datetime.now().day) + str(datetime.datetime.now().hour) + str(datetime.datetime.now().minute) + ".npy", np.array([rapports, phases, erreurs]))
+np.save("Phase ideale, f = " + str(f) + "Hz, nombre phases = " + str(len(phases)) + ", nombre mesures consecutives = " + str(nb_mesures) + ", time = " + str(datetime.datetime.now().day) + "/" + str(datetime.datetime.now().month) + " " + str(datetime.datetime.now().hour) + ":" + str(datetime.datetime.now().minute) + ".npy", np.array([rapports, phases, erreurs]))
 # amps /= signal_primaire[0]
 x, y = test_amplitudes(30, [])
 
