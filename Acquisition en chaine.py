@@ -105,7 +105,7 @@ def test_phases(tab_phases):
             
             pyc.Sysam.declencher_sorties(sys, 1, 1)
 
-            time.sleep(2/340) # Le temps que le signal atteigne le bout du tuyau
+            time.sleep(10/340) # Le temps que le signal atteigne le bout du tuyau
             
             pyc.Sysam.acquerir(sys)
 
@@ -153,7 +153,7 @@ def test_amplitudes(phi, tab_amp):
             
             pyc.Sysam.declencher_sorties(sys, 1, 0)
 
-            time.sleep(2/340) # Le temps que le signal atteigne le bout du tuyau
+            time.sleep(10/340) # Le temps que le signal atteigne le bout du tuyau
         
             pyc.Sysam.acquerir(sys)
         
