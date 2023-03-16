@@ -147,11 +147,11 @@ def test_amplitudes(phi, tab_amp):
         
         phi *= np.pi/180
         signal2 = np.array([a2 * np.sin(i / delta_i * 2 * np.pi + phi) for i in range(delta_i + 1)])
-        pyc.Sysam.config_sortie(sys, 1, Te * 10**6, signal2, -1)
+        pyc.Sysam.config_sortie(sys, 2, Te * 10**6, signal2, -1)
         
         for _ in range(nb_mesures):
             
-            pyc.Sysam.declencher_sorties(sys, 1, 0)
+            pyc.Sysam.declencher_sorties(sys, 1, 1)
 
             time.sleep(10/340) # Le temps que le signal atteigne le bout du tuyau
         
