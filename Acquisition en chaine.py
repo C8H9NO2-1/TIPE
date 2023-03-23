@@ -82,7 +82,7 @@ def valeur_signal_primaire():
     array = np.array([amp_mean, freq_mean, amp_std, freq_std])
     np.save("signal primaire.npy", array)
     
-# valeur_signal_primaire()
+valeur_signal_primaire()
 signal_primaire = np.load("signal primaire.npy")
 
 def test_phases(tab_phases):

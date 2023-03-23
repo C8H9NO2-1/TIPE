@@ -12,7 +12,7 @@ delta_i = 400
 f = 400
 Te = 1/(f * delta_i)
 
-t = np.linspace(0, 1/f, delta_i + 1)
+# t = np.linspace(0, 1/f, delta_i + 1)
 Amp1 = 5
 Amp2 = 5
 signal1 = np.array([Amp1 * np.sin(i / delta_i * 2 * np.pi) for i in range(delta_i + 1)])
@@ -20,7 +20,7 @@ signal1 = np.array([Amp1 * np.sin(i / delta_i * 2 * np.pi) for i in range(delta_
 Te_entree = 1 / (1000 * f) # periode d'echantillonage des entrees
 nb_points = 50000
 
-nb_mesures = 5 #? Nombre de mesures permettant de calculer un écart type
+nb_mesures = 1 #? Nombre de mesures permettant de calculer un écart type
 
 def fit_sin(tt, yy):
     '''Fit sin to the input time sequence, and return fitting parameters "amp", "omega", "phase", "offset", "freq", "period" and "fitfunc"'''
@@ -132,7 +132,6 @@ def test_phases(tab_phases):
 
 def test_phasesf(tab_phases,f):
     Te = 1/(f * delta_i)
-    t = np.linspace(0, 1/f, delta_i + 1)
     signal1 = np.array([Amp1 * np.sin(i / delta_i * 2 * np.pi) for i in range(delta_i + 1)])
     Te_entree = 1 / (1000 * f)
 
@@ -180,8 +179,9 @@ def test_phasesf(tab_phases,f):
     return tab_rapport, tab_error
 
 def phase_opti(f,demiplage,nbphases):
-    phasetab = [(360*(50e-2/340)*f-180)+((2*i/nbphases)-1)*demiplage for i in range(nbphases)]
-    tabrap, _ = test_phasesf(phasetab)
+    L = 47e-2
+    phasetab = [((360*(L/340)*f-180)+((2*i/nbphases)-1) % 360) * demiplage for i in range(nbphases)]
+    tabrap, _ = test_phasesf(phasetab, f)
     return phasetab.index(min(tabrap))
 
 
