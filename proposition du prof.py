@@ -139,8 +139,8 @@ def condIni(Nx, Ny, Nt, r_init, xcenter1,xcenter2, ycenter1,ycenter2, decalX, de
             # cube[x,y,0]=np.exp(-.0005*((x-xcenter1)**2+(y-ycenter1)**2))
     for x in range(Nx):
         for y in range(Ny):
-            phase = 60 * np.pi / 180
-            # cube[x, y, 0] += np.cos(- k * np.sqrt(((x - xcenter2) * delta_x)**2 + ((y - ycenter2) * delta_y)**2) + phase) * np.exp(-.00005*((x-xcenter2)**2+(y-ycenter2)**2))
+            phase = 0 * np.pi / 180
+            cube[x, y, 0] += np.cos(- k * np.sqrt(((x - xcenter2) * delta_x)**2 + ((y - ycenter2) * delta_y)**2) + phase) * np.exp(-.00005*((x-xcenter2)**2+(y-ycenter2)**2))
             # cube[x,y,0]=np.exp(-.0005*((x-xcenter2)**2+(y-ycenter2)**2))
     for x in range(1,Nx):
         for y in range(Ny):
@@ -215,14 +215,14 @@ def affCube(cube, Xtab, Ytab, fps, frn, Xlim, Ylim, Zlim_bas, Zlim_haut): #affic
 
 Nx=1000
 Ny=1000
-Nt = 150
+Nt = 300
 c = 1000
 delta_t = 1
 delta_x = c # pour avoir une célérité initiale cohérente (initialement, on décale d'un indice l'onde à t=0, et donc on la décale de c car delta_t = 1)
 delta_y = c # ET NON PAS 1
 
 
-cube = condIni(Nx,Ny,Nt,30,500,500,500,700,0,0)
+cube = condIni(Nx,Ny,Nt,30,500,500,300,700,0,0)
 resolutionEq2d(cube, Nt, delta_x, delta_y, delta_t, c)
 
 
